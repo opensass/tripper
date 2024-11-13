@@ -1,0 +1,2 @@
+# tripper
+AI Trip Planner
