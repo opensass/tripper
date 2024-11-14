@@ -1,5 +1,5 @@
-use crate::server::trip::model::Trip;
 use crate::server::trip::model::Detail;
+use crate::server::trip::model::Trip;
 use bson::oid::ObjectId;
 use serde::{Deserialize, Serialize};
 

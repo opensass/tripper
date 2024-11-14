@@ -6,8 +6,6 @@ use dioxus::prelude::*;
 use dioxus_logger::tracing;
 
 use crate::server::auth::controller::auth;
-use crate::server::trip::model::Trip;
-use crate::server::trip::model::Detail;
 use crate::server::common::response::SuccessResponse;
 use crate::server::conversation::model::Conversation;
 use crate::server::conversation::model::Message;
@@ -19,6 +17,8 @@ use crate::server::conversation::response::ConversationResponse;
 use crate::server::conversation::response::ConversationsListResponse;
 use crate::server::conversation::response::MessageResponse;
 use crate::server::conversation::response::MessagesListResponse;
+use crate::server::trip::model::Detail;
+use crate::server::trip::model::Trip;
 #[cfg(feature = "server")]
 use aws_config::BehaviorVersion;
 #[cfg(feature = "server")]
@@ -250,7 +250,8 @@ pub async fn send_query_to_bedrock(
                 .role(ConversationRole::User)
                 .content(ContentBlock::Text(system_prompt.to_string()))
                 .build()
-                .map_err(|_| "failed to build message").unwrap(),
+                .map_err(|_| "failed to build message")
+                .unwrap(),
         )
         .send()
         .await;
@@ -279,7 +280,8 @@ pub async fn send_query_to_bedrock(
         Err(e) => Err(e
             .as_service_error()
             .map(BedrockConverseError::from)
-            .unwrap_or_else(|| BedrockConverseError("Unknown service error".into())).into()),
+            .unwrap_or_else(|| BedrockConverseError("Unknown service error".into()))
+            .into()),
     }
 }
 

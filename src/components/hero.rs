@@ -13,31 +13,24 @@ pub fn Hero() -> Element {
                 if dark_mode == Theme::Dark { "bg-gray-900 text-white" } else { "bg-white text-black" }
             ),
             div {
-                class: "text-center space-y-6",
+                class: "text-center space-y-8",
                 p {
-                    class: "text-lg uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-red-600 animate-glow",
-                    "New"
+                    class: "text-lg font-semibold uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-600 animate-pulse",
+                    "Discover Your Next Destination"
                 }
                 h1 {
-                    class: "text-5xl md:text-7xl font-bold",
-                    "Effortless Content Creation"
+                    class: "text-5xl md:text-7xl font-extrabold leading-tight animate-fade-in",
+                    "AWS Do Be Trippin'"
                 },
                 p {
-                    class: "text-xl md:text-2xl",
-                    "Empower your creativity with Tripper, the ultimate platform to generate high-quality content in seconds."
+                    class: "text-xl md:text-2xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto animate-fade-in delay-150",
+                    "Plan smarter, explore deeper. Let AI guide your journey!"
                 },
                 div {
-                    class: "flex justify-center space-x-4",
+                    class: "flex justify-center space-x-6 animate-slide-up delay-200",
                     button {
-                        class: "bg-gray-500 text-white py-2 px-4 rounded-lg shadow hover:bg-gray-600 focus:outline-none",
+                        class: "bg-indigo-500 text-white py-2 px-6 rounded-full shadow-lg hover:bg-indigo-600 focus:outline-none transform hover:scale-105 transition-transform duration-150 font-semibold",
                         "Get Started"
-                    }
-                }
-                div {
-                    class: "pt-8 max-w-3xl mx-auto text-center bg-clip-text bg-gradient-to-r from-purple-200 to-red-800 animate-glow",
-                    p {
-                        class: "text-lg md:text-xl text-gray-600 dark:text-gray-400",
-                        "Create trips and social posts effortlessly with Tripper."
                     }
                 }
             }

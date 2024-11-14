@@ -132,141 +132,139 @@ pub fn Register() -> Element {
 
     rsx! {
         div {
-            class: format!("min-h-screen flex {}",
-                                if dark_mode == Theme::Dark { "bg-gray-900 text-white" } else { "bg-white text-gray-900" }),
-            div {
-                class: "md:flex-1 flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600",
-                style: "background-image: url('/signup.webp'); background-size: cover; background-position: center;",
-            }
-            div {
-                class: "flex-1 flex items-center justify-center p-8",
-                form {
-                    class: "w-full max-w-md",
-                    onsubmit: handle_register,
-                    Link {
-                        to : Route::Home {},
-                        class: "text-gray-400 text-sm",
-                        "← Back to Home"
-                    }
-                    h1 { class: "text-3xl font-semibold mb-6 mt-4", "Register" },
-                    div { class: "flex space-x-4 mb-6",
-                        div { class: "flex flex-col items-start w-full",
-                            span { class: "text-xs text-gray-500 mb-1", "Coming Soon" },
-                            button {
-                                class: "flex items-center justify-center w-full py-2 border rounded-md border-gray-300 bg-gray-100 text-gray-400 cursor-not-allowed",
-                                disabled: "true",
-                                "Login with Google"
-                            }
-                        }
-                        div { class: "flex flex-col items-start w-full",
-                            span { class: "text-xs text-gray-500 mb-1", "Coming Soon" },
-                            button {
-                                class: "flex items-center justify-center w-full py-2 border rounded-md border-gray-300 bg-gray-100 text-gray-400 cursor-not-allowed",
-                                disabled: "true",
-                                "Login with Github"
-                            }
+            class: format!("min-h-screen flex items-center justify-center {}",
+                if dark_mode == Theme::Dark { "bg-blue-500 text-white" } else { "bg-blue-900 text-gray-900" }
+            ),
+            style: "background-image: linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px), linear-gradient(rgba(0,0,0,0.05) 1px, transparent 1px); background-size: 40px 40px;",
+            form {
+                style: if dark_mode == Theme::Dark { "background-color: #1f2937; color: white;" } else { "background-color: white; color: black;" },
+                class: "w-full max-w-md flex flex-col items-center p-6 bg-white shadow-lg rounded-lg transform transition-all duration-300 hover:shadow-2xl",
+                onsubmit: handle_register,
+                Link {
+                    to: Route::Home {},
+                    class: "text-gray-400 text-sm mb-4",
+                    "← Back to Home"
+                }
+                h1 { class: "text-3xl font-semibold mb-6 mt-4", "Sign Up" },
+                div { class: "flex flex-col md:flex-row gap-4 w-full mb-6",
+                    div { class: "flex flex-col items-start w-full",
+                        span { class: "text-xs text-gray-500 mb-1", "Coming Soon" },
+                        button {
+                            class: "w-full py-2 border rounded-md border-gray-300 bg-gray-100 text-gray-400 cursor-not-allowed whitespace-nowrap",
+                            disabled: "true",
+                            "Register with Google"
                         }
                     }
-                    div { class: "text-center text-gray-500 mb-6", "or" }
-                    // if let Some(error) = &error_message() {
-                    //     p { class: "text-red-600 mb-4", "{error}" }
-                    // }
-                    div { class: "mb-4",
-                        input {
-                            class: format!(
-                                "mt-1 block w-full p-2 border rounded-md shadow-sm {} {}",
-                                if dark_mode == Theme::Dark { "bg-gray-900" } else { "" },
-                                if name_valid() { "border-gray-300" } else { "border-red-500"
-                            }),
-                            r#type: "text",
-                            placeholder: "Enter your name",
-                            value: "{name}",
-                            required: true,
-                            oninput: move |e| {
-                                let value = e.value().clone();
-                                name.set(value.clone());
-                                name_valid.set(validate_name(&value));
-                            }
-                        }
-                        if !name_valid() {
-                            p { class: "text-red-500 text-sm mt-1", "Name can't be blank" }
+                    div { class: "flex flex-col items-start w-full",
+                        span { class: "text-xs text-gray-500 mb-1", "Coming Soon" },
+                        button {
+                            class: "w-full py-2 border rounded-md border-gray-300 bg-gray-100 text-gray-400 cursor-not-allowed whitespace-nowrap",
+                            disabled: "true",
+                            "Register with Github"
                         }
                     }
-                    div { class: "mb-4",
-                        input {
-                            class: format!(
-                                "mt-1 block w-full p-2 border rounded-md shadow-sm {} {}",
-                                if dark_mode == Theme::Dark { "bg-gray-900" } else { "" },
-                                if email_valid() { "border-gray-300" } else { "border-red-500"
-                            }),
-                            r#type: "text",
-                            placeholder: "Email Address",
-                            value: "{email}",
-                            required: true,
-                            oninput: move |e| {
-                                let value = e.value().clone();
-                                email.set(value.clone());
-                                email_valid.set(validate_email(&value));
-                            }
+                }
+
+                div { class: "text-center text-gray-500 mb-6", "or" }
+
+                div { class: "relative mb-4 w-full",
+                    input {
+                        class: format!(
+                            "w-full p-3 border rounded-md shadow-sm transition-all {} {}",
+                            if dark_mode == Theme::Dark { "bg-gray-700 text-white" } else { "bg-white text-gray-900" },
+                            if name_valid() { "border-gray-300" } else { "border-red-500" }
+                        ),
+                        r#type: "text",
+                        placeholder: "Full Name",
+                        value: "{name}",
+                        required: true,
+                        oninput: move |e| {
+                            let value = e.value().clone();
+                            name.set(value.clone());
+                            name_valid.set(validate_name(&value));
                         }
-                        if !email_valid() {
-                            p { class: "text-red-500 text-sm mt-1", "Enter a valid email address" }
-                        }
+                    },
+                    if !name_valid() {
+                        p { class: "text-red-500 text-sm mt-1", "Name can't be blank" }
                     }
-                    div { class: "mb-4",
-                        div { class: "relative",
-                            input {
-                                class: format!(
-                                    "mt-1 block w-full p-2 border rounded-md shadow-sm {} {}",
-                                    if dark_mode == Theme::Dark { "bg-gray-900" } else { "" },
-                                    if password_valid() { "border-gray-300" } else { "border-red-500"
-                                }),
-                                r#type: if show_password() { "text" } else { "password" },
-                                placeholder: "Password",
-                                value: "{password}",
-                                required: true,
-                                oninput: move |e| {
-                                    let value = e.value().clone();
-                                    password.set(value.clone());
-                                    password_valid.set(validate_password(&value));
-                                }
-                            }
-                            button {
-                                onclick: move |_| show_password.set(!show_password()),
-                                class: "absolute inset-y-0 right-0 pr-3 text-gray-500",
-                                if show_password() {
-                                    Icon {
-                                        width: 30,
-                                        height: 30,
-                                        icon: FaEye,
-                                    }
-                                } else {
-                                    Icon {
-                                        width: 30,
-                                        height: 30,
-                                        icon: FaEyeSlash,
-                                    }
-                                }
-                            }
+                }
+
+                div { class: "relative mb-4 w-full",
+                    input {
+                        class: format!(
+                            "w-full p-3 border rounded-md shadow-sm transition-all {} {}",
+                            if dark_mode == Theme::Dark { "bg-gray-700 text-white" } else { "bg-white text-gray-900" },
+                            if email_valid() { "border-gray-300" } else { "border-red-500" }
+                        ),
+                        r#type: "text",
+                        placeholder: "Email",
+                        value: "{email}",
+                        required: true,
+                        oninput: move |e| {
+                            let value = e.value().clone();
+                            email.set(value.clone());
+                            email_valid.set(validate_email(&value));
                         }
-                        if !password_valid() {
-                            p { class: "text-red-500 text-sm mt-1", "Password can't be blank" }
-                        }
+                    },
+                    if !email_valid() {
+                        p { class: "text-red-500 text-sm mt-1", "Enter a valid email address" }
                     }
+                }
+
+                div { class: "relative mb-4 w-full",
+                    input {
+                        class: format!(
+                            "w-full p-3 border rounded-md shadow-sm transition-all {} {}",
+                            if dark_mode == Theme::Dark { "bg-gray-700 text-white" } else { "bg-white text-gray-900" },
+                            if password_valid() { "border-gray-300" } else { "border-red-500" }
+                        ),
+                        r#type: if show_password() { "text" } else { "password" },
+                        placeholder: "Password",
+                        value: "{password}",
+                        required: true,
+                        oninput: move |e| {
+                            let value = e.value().clone();
+                            password.set(value.clone());
+                            password_valid.set(validate_password(&value));
+                        }
+                    },
                     button {
-                        class: "flex items-center text-center justify-center space-x-2 w-full py-2 mt-4 bg-blue-600 hover:bg-blue-700 text-white rounded-md",
-                        r#type: "submit",
-                        disabled: loading(),
-                        if loading() {
-                            Spinner {
-                                aria_label: "Loading spinner".to_string(),
-                                size: SpinnerSize::Md,
-                                dark_mode: true,
-                            }
-                            span { "Signing Up..." }
+                        onclick: move |_| show_password.set(!show_password()),
+                        class: "absolute inset-y-0 right-0 pr-3 text-gray-500 hover:text-gray-700",
+                        if show_password() {
+                            Icon { icon: FaEye, width: 20, height: 20 }
                         } else {
-                            span { "Sign Up" }
+                            Icon { icon: FaEyeSlash, width: 20, height: 20 }
                         }
+                    },
+                    if !password_valid() {
+                        p { class: "text-red-500 text-sm mt-1", "Password can't be blank" }
+                    }
+                }
+
+                button {
+                    class: "flex items-center justify-center space-x-2 w-full py-2 mt-4 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-all",
+                    r#type: "submit",
+                    disabled: loading(),
+                    if loading() {
+                        Spinner {
+                            aria_label: "Loading spinner".to_string(),
+                            size: SpinnerSize::Md,
+                            dark_mode: dark_mode == Theme::Dark,
+                        }
+                        span { "Signing Up..." }
+                    } else {
+                        span { "Sign Up" }
+                    }
+                }
+
+                div {
+                    class: "text-gray-500 mt-6",
+                    "Already have an account? ",
+                    a {
+                        href: "#",
+                        class: "text-blue-500 font-semibold hover:underline",
+                        "Sign in"
                     }
                 }
             }

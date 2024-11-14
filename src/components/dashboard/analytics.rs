@@ -47,12 +47,12 @@ pub fn AnalyticsPage() -> Element {
             div {
                 class: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6",
                 MetricCard { title: "Total Trips", value: analytics().engagement.total_trips.to_string(), index: 0 }
-                MetricCard { title: "Total Detail", value: analytics().engagement.total_details.to_string(), index: 1 }
-                MetricCard { title: "Avg Detail per Trip", value: format!("{:.2}", analytics().engagement.avg_details_per_trip), index: 2 }
-                MetricCard { title: "Trending Topic", value: analytics().predictions.trending_genre.clone(), index: 3 }
-                MetricCard { title: "Projected Growth", value: format!("{:.2}%", analytics().predictions.projected_growth), index: 4 }
-                MetricCard { title: "Avg Gen Time", value: format!("{:.2}s", analytics().ai_usage.avg_gen_time), index: 5 }
-                MetricCard { title: "Success Rate", value: format!("{:.2}%", analytics().ai_usage.success_rate), index: 6 }
+                MetricCard { title: "Avg Days per Trip", value: format!("{:.2}", analytics().engagement.avg_details_per_trip), index: 2 }
+                MetricCard { title: "Avg Places per Trip", value: format!("{:.2}", analytics().engagement.avg_details_per_trip), index: 2 }
+                MetricCard { title: "Trending Trip", value: analytics().predictions.trending_genre.clone(), index: 3 }
+                // MetricCard { title: "Projected Growth", value: format!("{:.2}%", analytics().predictions.projected_growth), index: 4 }
+                // MetricCard { title: "Avg Gen Time", value: format!("{:.2}s", analytics().ai_usage.avg_gen_time), index: 5 }
+                // MetricCard { title: "Success Rate", value: format!("{:.2}%", analytics().ai_usage.success_rate), index: 6 }
             }
         }
     }

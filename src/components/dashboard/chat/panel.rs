@@ -4,18 +4,18 @@ use crate::components::dashboard::trips::list::CACHE_TIMEOUT;
 use crate::components::dashboard::trips::read::CachedDetailData;
 use crate::components::dashboard::trips::read::CHAPTERS_CACHE_KEY;
 use crate::components::dashboard::trips::read::CHAPTERS_CACHE_TIMEOUT;
-use crate::server::trip::controller::get_trips_for_user;
-use crate::server::trip::controller::get_details_for_trip;
-use crate::server::trip::model::Trip;
-use crate::server::trip::model::Detail;
-use crate::server::trip::request::GetTripsForUserRequest;
-use crate::server::trip::request::GetDetailContentRequest;
 use crate::server::conversation::controller::get_messages;
 use crate::server::conversation::controller::save_message_to_db;
 use crate::server::conversation::controller::send_query_to_bedrock;
 use crate::server::conversation::model::Message;
 use crate::server::conversation::request::GetMessagesRequest;
 use crate::server::conversation::request::SendQueryRequest;
+use crate::server::trip::controller::get_details_for_trip;
+use crate::server::trip::controller::get_trips_for_user;
+use crate::server::trip::model::Detail;
+use crate::server::trip::model::Trip;
+use crate::server::trip::request::GetDetailContentRequest;
+use crate::server::trip::request::GetTripsForUserRequest;
 use gloo_storage::Storage;
 
 use crate::theme::Theme;
@@ -173,9 +173,7 @@ pub fn ChatPanel(conversation_id: Signal<ObjectId>, user_token: Signal<String>) 
 
     let mut handle_send_query = {
         move || {
-            if !input_query().is_empty()
-                && selected_trip().is_some()
-                && selected_detail().is_some()
+            if !input_query().is_empty() && selected_trip().is_some() && selected_detail().is_some()
             {
                 thinking.set(true);
                 let query_text = input_query();

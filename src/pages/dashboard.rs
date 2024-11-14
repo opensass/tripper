@@ -1,11 +1,11 @@
-use crate::components::dashboard::trips::create::CreateTripPanel;
-use crate::components::dashboard::trips::list::TripsPanel;
-use crate::components::dashboard::trips::read::ReadTripPanel;
 use crate::components::dashboard::chat::ChatPanelPage;
 use crate::components::dashboard::navbar::Navbar;
 use crate::components::dashboard::profile::EditProfilePanel;
 use crate::components::dashboard::sidebar::Sidebar;
 use crate::components::dashboard::sidebar::Tab;
+use crate::components::dashboard::trips::create::CreateTripPanel;
+use crate::components::dashboard::trips::list::TripsPanel;
+use crate::components::dashboard::trips::read::ReadTripPanel;
 use crate::server::auth::controller::about_me;
 use crate::theme::{Theme, THEME};
 use dioxus::prelude::*;
