@@ -6,23 +6,23 @@ use dioxus::prelude::*;
 use dioxus_logger::tracing;
 
 use crate::server::auth::controller::auth;
-use crate::server::trip::model::Trip;
+use crate::server::common::response::SuccessResponse;
 use crate::server::trip::model::Detail;
+use crate::server::trip::model::Trip;
 use crate::server::trip::request::AIRequest;
 use crate::server::trip::request::CompleteTripRequest;
-use crate::server::trip::request::GenerateTripRequest;
 use crate::server::trip::request::GenerateDetailContentRequest;
+use crate::server::trip::request::GenerateTripRequest;
+use crate::server::trip::request::GetDetailContentRequest;
 use crate::server::trip::request::GetTripForUserRequest;
 use crate::server::trip::request::GetTripsForUserRequest;
-use crate::server::trip::request::GetDetailContentRequest;
 use crate::server::trip::request::StoreTripRequest;
 use crate::server::trip::request::UpdateTripContentRequest;
-use crate::server::trip::response::TripResponse;
 use crate::server::trip::response::GenerateTripOutlineResponse;
+use crate::server::trip::response::TripResponse;
 use crate::server::trip::response::{
     AIUsageStats, AnalyticsData, EngagementStats, PredictiveStats,
 };
-use crate::server::common::response::SuccessResponse;
 use std::env;
 
 use bson::oid::ObjectId;
@@ -34,9 +34,9 @@ use regex::Regex;
 use {
     crate::ai::get_ai,
     crate::db::get_client,
-    crate::unsplash::get_unsplash_client,
-    crate::server::conversation::controller::BedrockConverseError,
     crate::server::conversation::controller::get_converse_output_text,
+    crate::server::conversation::controller::BedrockConverseError,
+    crate::unsplash::get_unsplash_client,
     http_api_isahc_client::{Client as _, IsahcClient},
     rand::thread_rng,
     rand::Rng,
@@ -234,20 +234,25 @@ pub async fn generate_trip_outline(
 
     let system_prompt = format!(
         "
-        **System Prompt (SP):** You are an expert in trip creation, generating a structured outline.
-
-        **Prompt (P):** Generate an outline for a trip titled '{title}', with subtitle '{subtitle}'. Main topic is '{title}' in {language}. The trip should contain {details} details covering {subtopics} subtopics. Provide an estimated duration for each detail.
-
+        **System Prompt (SP):** You are an expert travel planner creating a structured, day-by-day trip itinerary.
+    
+        **Prompt (P):** Create a travel outline titled '{title}' to the destination '{subtitle}'. The trip should be planned with a main theme of '{title}', and presented in {language}. The itinerary should fit within a budget of {budget}. 
+    
+        Generate a day-by-day schedule for the trip, including specific places to visit, activities, and an estimated time duration for each. Use a structured format for each day and activity.
+    
         **Expected Format (EF):**
-        ### Detail [number]: [Detail Title]
+        ### Day [number]: [Day Title]
+        #### Place [number]: [Place Name]
         **Estimated Duration:** [Duration] minutes
-
-        **Roleplay (RP):** As a trip editor, create an engaging outline.
+    
+        * [Activity description]
+        * [Additional information as needed]
+    
+        **Roleplay (RP):** As a travel planner, make the plan engaging and realistic.
         ",
         title = req.title,
         subtitle = req.subtitle,
-        details = req.details,
-        subtopics = req.subtopics,
+        budget = req.subtopics,
         language = req.language,
     );
 
@@ -261,7 +266,8 @@ pub async fn generate_trip_outline(
                 .role(ConversationRole::User)
                 .content(ContentBlock::Text(system_prompt.to_string()))
                 .build()
-                .map_err(|_| "failed to build message").unwrap(),
+                .map_err(|_| "failed to build message")
+                .unwrap(),
         )
         .send()
         .await;
@@ -269,12 +275,13 @@ pub async fn generate_trip_outline(
     match response {
         Ok(output) => {
             outline = get_converse_output_text(output)?;
-        },
+        }
         Err(e) => {
             return Err(e
                 .as_service_error()
                 .map(BedrockConverseError::from)
-                .unwrap_or_else(|| BedrockConverseError("Unknown service error".into())).into());
+                .unwrap_or_else(|| BedrockConverseError("Unknown service error".into()))
+                .into());
         }
     }
 
@@ -320,41 +327,60 @@ fn parse_outline(
 ) -> Result<Vec<Detail>, ServerFnError> {
     let mut details = Vec::new();
 
-    let re =
-        Regex::new(r"### Detail (\d+):\s*(.*?)\s*\n\*\*Estimated Duration:\*\*\s*(\d+)\s*minutes")
-            .unwrap();
+    let day_re = Regex::new(r"### Day (\d+): (.*?)\n").unwrap();
+    let place_re =
+        Regex::new(r"#### Place (\d+): (.*?)\n\*\*Estimated Duration:\*\* (\d+) minutes").unwrap();
+    let activity_re = Regex::new(r"\* (.+)").unwrap();
 
     let mut current_position = 0;
-    while let Some(caps) = re.captures(&outline[current_position..]) {
-        let title = &caps[2];
-        let estimated_duration = caps[3].parse().unwrap_or(0);
 
-        let next_detail_pos = outline[current_position..]
-            .find("### Detail ")
-            .unwrap_or(outline.len());
+    while let Some(day_caps) = day_re.captures(&outline[current_position..]) {
+        let day_number: i32 = day_caps[1].parse().unwrap_or(1);
+        let day_title = &day_caps[2];
 
-        let detail_content = &outline[current_position..current_position + next_detail_pos];
+        // Capture the full content for this day
+        let day_start = current_position + day_caps.get(0).unwrap().end();
+        let next_day_pos = day_re
+            .find_at(&outline, day_start)
+            .map_or(outline.len(), |m| m.start());
 
-        let bullet_points_re = Regex::new(r"\* .+").unwrap();
-        let bullet_points = bullet_points_re
-            .find_iter(detail_content)
-            .map(|mat| mat.as_str())
-            .collect::<Vec<&str>>()
-            .join("\n");
+        let day_content = &outline[day_start..next_day_pos];
+        current_position = next_day_pos;
 
-        details.push(Detail {
-            id: ObjectId::new(),
-            trip_id,
-            title: title.to_string(),
-            estimated_duration,
-            html: String::new(),
-            completed: false,
-            language: language.clone(),
-            created_at: Utc::now(),
-            updated_at: Utc::now(),
-        });
+        // Capture each place with its activities and duration
+        let mut place_pos = 0;
+        while let Some(place_caps) = place_re.captures(&day_content[place_pos..]) {
+            let place_number: i32 = place_caps[1].parse().unwrap_or(1);
+            let place_name = &place_caps[2];
+            let estimated_duration = place_caps[3].parse().unwrap_or(0);
 
-        current_position += next_detail_pos + detail_content.len();
+            let place_start = place_pos + place_caps.get(0).unwrap().end();
+            let next_place_pos = place_re
+                .find_at(&day_content, place_start)
+                .map_or(day_content.len(), |m| m.start());
+
+            let place_content = &day_content[place_start..next_place_pos];
+            place_pos = next_place_pos;
+
+            // Bullet point activities for each place
+            let bullet_points = activity_re
+                .find_iter(place_content)
+                .map(|mat| mat.as_str().to_string())
+                .collect::<Vec<String>>()
+                .join("\n");
+
+            details.push(Detail {
+                id: ObjectId::new(),
+                trip_id,
+                title: format!("Day {} - {}", day_number, day_title),
+                html: format!("Place {}: {}\n{}", place_number, place_name, bullet_points),
+                estimated_duration,
+                language: language.clone(),
+                completed: false,
+                created_at: Utc::now(),
+                updated_at: Utc::now(),
+            });
+        }
     }
 
     Ok(details)
@@ -392,20 +418,22 @@ pub async fn generate_detail_content(
                 .role(ConversationRole::User)
                 .content(ContentBlock::Text(system_prompt.to_string()))
                 .build()
-                .map_err(|_| "failed to build message").unwrap(),
+                .map_err(|_| "failed to build message")
+                .unwrap(),
         )
         .send()
         .await;
-    
+
     match response {
         Ok(output) => {
             markdown = get_converse_output_text(output)?;
-        },
+        }
         Err(e) => {
             return Err(e
                 .as_service_error()
                 .map(BedrockConverseError::from)
-                .unwrap_or_else(|| BedrockConverseError("Unknown service error".into())).into());
+                .unwrap_or_else(|| BedrockConverseError("Unknown service error".into()))
+                .into());
         }
     }
 
@@ -433,32 +461,36 @@ pub async fn generate_detail_content(
                 .role(ConversationRole::User)
                 .content(ContentBlock::Text(content_prompt.to_string()))
                 .build()
-                .map_err(|_| "failed to build message").unwrap(),
+                .map_err(|_| "failed to build message")
+                .unwrap(),
         )
         .send()
         .await;
-    
+
     match response {
         Ok(output) => {
             html = get_converse_output_text(output)
-            .map_err(ServerFnError::new)?
-            .trim_start_matches("```html")
-            .trim_end_matches("```")
-            .trim()
-            .to_string();
-        },
+                .map_err(ServerFnError::new)?
+                .trim_start_matches("```html")
+                .trim_end_matches("```")
+                .trim()
+                .to_string();
+        }
         Err(e) => {
             return Err(e
                 .as_service_error()
                 .map(BedrockConverseError::from)
-                .unwrap_or_else(|| BedrockConverseError("Unknown service error".into())).into());
+                .unwrap_or_else(|| BedrockConverseError("Unknown service error".into()))
+                .into());
         }
     }
 
     html = update_detail_content(UpdateTripContentRequest {
         trip_id: req.detail_id.to_string(),
         new_content: html.clone(),
-    }).await?.data;
+    })
+    .await?
+    .data;
 
     Ok(SuccessResponse {
         status: "success".into(),
@@ -591,7 +623,6 @@ pub async fn fetch_analytics_data(
     })
 }
 
-
 #[server]
 pub async fn get_details_for_trip(
     req: GetDetailContentRequest,
@@ -639,25 +670,27 @@ pub async fn get_details_for_trip(
                         .role(ConversationRole::User)
                         .content(ContentBlock::Text(content_prompt.to_string()))
                         .build()
-                        .map_err(|_| "failed to build message").unwrap(),
+                        .map_err(|_| "failed to build message")
+                        .unwrap(),
                 )
                 .send()
                 .await;
-            
+
             match response {
                 Ok(output) => {
                     html_content = get_converse_output_text(output)
-                    .map_err(ServerFnError::new)?
-                    .trim_start_matches("```html")
-                    .trim_end_matches("```")
-                    .trim()
-                    .to_string();
-                },
+                        .map_err(ServerFnError::new)?
+                        .trim_start_matches("```html")
+                        .trim_end_matches("```")
+                        .trim()
+                        .to_string();
+                }
                 Err(e) => {
                     return Err(e
                         .as_service_error()
                         .map(BedrockConverseError::from)
-                        .unwrap_or_else(|| BedrockConverseError("Unknown service error".into())).into());
+                        .unwrap_or_else(|| BedrockConverseError("Unknown service error".into()))
+                        .into());
                 }
             }
 

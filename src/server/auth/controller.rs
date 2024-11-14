@@ -12,8 +12,8 @@ use crate::server::auth::model::{TokenClaims, User};
 use crate::server::auth::response::{
     AuthResponse, DashboardResponse, LoginUserSchema, RegisterUserSchema, UserResponse,
 };
-use crate::server::trip::model::Trip;
 use crate::server::common::response::SuccessResponse;
+use crate::server::trip::model::Trip;
 
 #[cfg(feature = "server")]
 use {

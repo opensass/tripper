@@ -1,16 +1,16 @@
-use crate::components::dashboard::trips::list::CachedTripsData;
-use crate::components::dashboard::trips::list::CACHE_KEY;
 use crate::components::dashboard::fields::input::InputField;
 use crate::components::dashboard::fields::number::NumberField;
 use crate::components::dashboard::fields::select::SelectField;
+use crate::components::dashboard::trips::list::CachedTripsData;
+use crate::components::dashboard::trips::list::CACHE_KEY;
 use crate::components::spinner::Spinner;
 use crate::components::spinner::SpinnerSize;
 use crate::components::toast::manager::ToastManager;
 use crate::components::toast::manager::ToastType;
-use crate::server::trip::controller::generate_trip_outline;
 use crate::server::trip::controller::generate_detail_content;
-use crate::server::trip::request::GenerateTripRequest;
+use crate::server::trip::controller::generate_trip_outline;
 use crate::server::trip::request::GenerateDetailContentRequest;
+use crate::server::trip::request::GenerateTripRequest;
 use crate::theme::Theme;
 use crate::theme::THEME;
 use chrono::Duration;
@@ -24,10 +24,10 @@ pub fn CreateTripPanel(user_token: Signal<String>) -> Element {
     let title = use_signal(|| "".to_string());
     let subtitle = use_signal(|| "".to_string());
     let model = use_signal(|| "gemini-1.5-flash".to_string());
-    let subtopics = use_signal(|| 3);
+    let subtopics = use_signal(|| 30);
     let details = use_signal(|| 5);
     let language = use_signal(|| "English".to_string());
-    let max_length = use_signal(|| 1000);
+    let max_length = use_signal(|| 10);
 
     let title_valid = use_signal(|| true);
     let subtitle_valid = use_signal(|| true);
@@ -185,12 +185,11 @@ pub fn CreateTripPanel(user_token: Signal<String>) -> Element {
             form { class: "space-y-4",
                 onsubmit: handle_submit,
                 InputField { label: "Title", value: title, is_valid: title_valid, validate: validate_title, required: true }
-                InputField { label: "Subtitle", value: subtitle, is_valid: subtitle_valid, validate: validate_subtitle, required: true }
-                SelectField { label: "Model", options: vec!["gemini-pro", "gemini-1.0-pro", "gemini-1.5-pro", "gemini-1.5-flash"], selected: model }
-                NumberField { label: "Subtopics per Detail", value: subtopics, required: true }
-                NumberField { label: "Detail", value: details, required: true }
+                InputField { label: "Destination", value: subtitle, is_valid: subtitle_valid, validate: validate_subtitle, required: true }
+                SelectField { label: "Model", options: vec!["claude-3", "claude-3.5-sonet"], selected: model }
+                NumberField { label: "Budget ($)", value: subtopics, required: true }
                 InputField { label: "Language", value: language, is_valid: language_valid, validate: validate_language, required: true }
-                NumberField { label: "Max Length", value: max_length, required: true }
+                NumberField { label: "NB Days", value: max_length, required: true }
                 // if let Some(error) = &form_error() {
                 //     p { class: "text-red-600", "{error}" }
                 // }

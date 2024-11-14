@@ -2,12 +2,12 @@
 
 use crate::components::navbar::HomeNavBar;
 use crate::components::navbar::LoginNavBar;
-use crate::pages::trip::EditTrip;
-use crate::pages::trip::ReadTrip;
 use crate::pages::dashboard::Dashboard;
 use crate::pages::home::Home;
 use crate::pages::login::Login;
 use crate::pages::signup::Register;
+use crate::pages::trip::EditTrip;
+use crate::pages::trip::ReadTrip;
 use dioxus::prelude::*;
 
 #[derive(Clone, Routable, Debug, PartialEq, serde::Serialize, serde::Deserialize)]

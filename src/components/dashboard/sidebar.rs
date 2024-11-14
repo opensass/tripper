@@ -90,7 +90,7 @@ pub fn Sidebar(active_tab: Signal<Tab>, navigate: bool) -> Element {
                     height: 30,
                     icon: FaFileLines,
                 },
-                span { class: "hidden md:inline", "Generate" }
+                span { class: "hidden md:inline", "Plan" }
             }
             div { class: tab_style(Tab::ReadTrip),
                 onclick: move |_| active_tab.set(Tab::ReadTrip),
@@ -99,7 +99,7 @@ pub fn Sidebar(active_tab: Signal<Tab>, navigate: bool) -> Element {
                     height: 30,
                     icon: FaAddressBook,
                 },
-                span { class: "hidden md:inline", "Read Trip" }
+                span { class: "hidden md:inline", "Explore Trip" }
             }
             div { class: tab_style(Tab::EditProfile),
                 onclick: move |_| {
