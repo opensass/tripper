@@ -2,285 +2,126 @@
 
 # 📖 Tripper 🤖
 
-[![made-with-rust](https://img.shields.io/badge/Made%20with-Rust-1f425f.svg?logo=rust&logoColor=white)](https://www.rust-lang.org/)
+[![Made-with-Rust](https://img.shields.io/badge/Made%20with-Rust-1f425f.svg?logo=rust&logoColor=white)](https://www.rust-lang.org/)
 [![Rust](https://img.shields.io/badge/Rust-1.79%2B-blue.svg)](https://www.rust-lang.org)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/wiseaidev)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-[![Open SASS Discord](https://dcbadge.limes.pink/api/server/dGCPR6bq)](https://discord.gg/dGCPR6bq)
+[![Open SASS Discord](https://dcbadge.limes.pink/api/server/b5JbvHW5nv)](https://discord.gg/b5JbvHW5nv)
 
-![Arch](https://github.com/user-attachments/assets/b5af3f0b-1855-4510-853a-f4258e81cccd)
-
-|                                                                          🐧 Linux `(Recommended)`                                                                          |                                                                                  🪟 Windows                                                                                  |
-| :------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| [ ![Linux Banner](https://github.com/user-attachments/assets/9b895bcf-43f8-4839-842b-4ad51c8c7777)](https://github.com/opensass/tripper/releases/download/v0.0.1/dist.zip) | [ ![Windows Banner](https://github.com/user-attachments/assets/9b895bcf-43f8-4839-842b-4ad51c8c7777)](https://github.com/opensass/tripper/releases/download/v0.0.1/dist.zip) |
-|                                                                              `./dist/tripper`                                                                              |                                                                             `.\dist\tripper.exe`                                                                             |
+![arch](https://github.com/user-attachments/assets/48a398bc-32fe-4416-975d-ba439a6cddbf)
 
 </div>
 
-## 🖥️ For the `.exe` Enjoyers
+## 🚀 About Tripper
 
-So, you're the kinda person who'd rather download an `.exe` than spend 20 minutes watching code compile? No worries; I gotcha! 🎉 Each release comes with pre-compiled binaries. Just download, set env vars, run a command, and boom.
+Tripper is a modern travel assistant leveraging [**AWS Bedrock**](https://aws.amazon.com/bedrock/) models to enhance your trip planning and exploration. With powerful integrations, streamlined data models, and a modular design, Tripper makes organizing, customizing, and experiencing your journeys effortless.
 
-> [!NOTE]
->
-> - 📸 **Unsplash API**: Limited to 50 requests per hour (we're all sharing the same quota, so easy on the trigger!).
-> - 💎 **Gemini credits**: Unlimited! So feel free to use as you please.
-> - 🗄️ **MongoDB Storage**: Capped at around ~512MB. Let's keep things tidy and not go overboard.
+### 🛠️ Pre-requisites
 
-Now, navigate to the [🔑 Setting Up Env Vars](https://github.com/opensass/tripper#-setting-up-env-vars) section.
-
-## 🤓 For the Hardcore Nerds
-
-Aight, if you're, just like me, one of those brave souls who **wants** to compile everything themself, this section is for you. 🛠️ No shortcuts, just raw code and dedication. Grab your favorite terminal, fire up those dependencies, and let the adventure begin!
-
-### 🛠️ Pre-requisites:
-
-1. Install [`rustup`](https://www.rust-lang.org/tools/install):
+1. **Install [`rustup`](https://www.rust-lang.org/tools/install)**:
 
    ```bash
    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
    ```
 
-1. Install [`Dioxus CLI`](https://dioxuslabs.com/learn/0.5/getting_started):
+2. **Install [`Dioxus CLI`](https://dioxuslabs.com/learn/0.5/getting_started)**:
 
    ```bash
    cargo install dioxus-cli
    ```
 
-1. Fork/Clone the GitHub repository.
+3. **Fork/Clone the Repository**:
 
    ```bash
    git clone https://github.com/opensass/tripper
    ```
 
-## 🔑 Setting Up Env Vars
+### 🔑 Setting Up Environment Variables
 
-Before you can start running Tripper, you'll need to configure a few environment variables. These are essential for connecting to external services like MongoDB, Unsplash, and the Gemini AI, so let's get you set up! Here's a quick guide:
+Before running **Tripper**, configure the environment variables to connect to external services such as **MongoDB**, **Unsplash**, **Google Maps** and **AWS Bedrock**. Here's how:
 
-### Create an `.env` File
+#### Create an `.env` File
 
-Inside the project root, copy and create a file named `.env` from `.env-example`. This file will securely store all your environment variables.
+Copy the example environment file and update it with your credentials.
 
 ```bash
 cp .env.example .env
 ```
 
+**`.env` Variables:**
+
+```bash
+MONGODB_USR=
+MONGODB_PWD=
+MONGODB_CLSTR=your-cluster.mongodb.net
+MONGODB_DB_NAME=tripper
+JWT_SECRET=
+UNSPLASH_API_KEY=
+AWS_REGION=
+AWS_PROFILE=
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
+AWS_CONTAINER_CREDENTIALS_FULL_URI=
+AWS_CONTAINER_AUTHORIZATION_TOKEN=
+AWS_SDK_UA_APP_ID=
+```
+
 > [!NOTE]
-> Replace the following values with your actual credentials.
->
-> ```bash
-> MONGODB_USR=
-> MONGODB_PWD=
-> MONGODB_CLSTR=your-cluster.mongodb.net
-> MONGODB_DB_NAME=trippers
-> JWT_SECRET=
-> GEMINI_API_KEY=
-> UNSPLASH_API_KEY=
-> ```
->
-> If you're missing any of these keys, check the service's developer portal to generate them.
+> Visit the respective service portals (AWS, MongoDB, Google Maps and Unsplash) to generate any missing credentials.
 
-### 🥑 Set Up MongoDB
+### 🥑 MongoDB Setup
 
-Follow [our quick guide](./MongoDB.md) to set up your MongoDB database and connect it to your project!
+Follow [this guide](./MongoDB.md) to set up your MongoDB database and establish a connection with Tripper.
 
-### 🔐 Generate JWT Secret Key
+### 🔐 Generate a JWT Secret Key
 
-Generate a secret key using OpenSSL and update its env var in the `.env` file.
+Use OpenSSL to create a secure JWT secret key and update your `.env` file.
 
 ```bash
 openssl rand -hex 128
-
-d8d0b35856c6fa90a8f3f818fa1c71785d63181945077a4c81e28f731de406c94acad5e864fc85604c520cd67e4977a06656eee081d2d0a897415bb42d8dca167662ae53078084ce70feaee104a3428797078c5bb359db277b26182114bb6b6f4e50d34dcce1ab2ed952912f5783ca89138d508f41bc2d56e60ef2480f501819
 ```
 
-### ✨ Gemini AI API
+### ✨ Set Up AWS Bedrock
 
-To obtain your API key, navigate to [Google AI Studio](https://aistudio.google.com/app/apikey) and generate it there. This key allows tripper to communicate with Gemini API.
+AWS Bedrock provides the AI capabilities that power Tripper's smart recommendations and trip planning features. Ensure your **AWS Bedrock** environment is configured by setting up the required access keys and credentials in your `.env` file.
 
 ### 📸 Unsplash API
 
-Tripper uses Unsplash which provides a powerful API to search for and retrieve high-quality images. To communicate with this api you will need a [Secret key](https://unsplash.com/oauth/applications). If you don't already have one, sign up for a free account at Unsplash, create a new app, and copy the Secret key at the bottom of the page after creating the app.
+Tripper integrates with the **Unsplash API** for sourcing high-quality images. Obtain an API key from the [Unsplash Developer Portal](https://unsplash.com/oauth/applications) and include it in your `.env` file.
 
-### 🚀 Building and Running
+### 🚀 Running the Application
 
-- Run the client:
+1. Start the client:
 
-  ```sh
-  dx serve --port 3000
-  ```
+   ```bash
+   dx serve --port 3000
+   ```
 
-Navigate to http://localhost:3000 to explore the landing page.
+2. Navigate to `http://localhost:3000` to explore the Tripper landing page.
 
-> [!WARNING]
-> This might take a few minutes (yes, seriously). But hey, good things take time, right?
+> **Note:** The initial build might take a few minutes, but the results are worth the wait!
 
-Happy compiling! 😄
+## ✅ Features
 
-## ✅ Supported Features
+- Full support for AWS Bedrock models, including **Claude 3** and other advanced AI solutions.
+- Intelligent trip planning with high-quality image integration.
+- Secure user authentication and role management.
 
-- Support for all Gemini models (e.g. Gemini Pro 1.5, Flash 1.5).
+## 🛠️ Project Structure
 
-![Gemini Models](https://github.com/user-attachments/assets/58f531d0-c352-40eb-8bb2-aed7359fccbc)
+- **Components**: Reusable UI components like `navbar` and `footer` ensure consistency and maintainability.
+- **Server**: Organized with the **MVC** pattern for clear separation of concerns. This includes models, controllers, and response handlers.
+- **Pages**: All app views (e.g., `dashboard`, `home`) are modularized for straightforward updates.
 
-- Built-in Dark and Light themes.
-
-![Light Dark Themes](https://github.com/user-attachments/assets/71820497-efcc-4227-a906-e97cdf9aa45b)
-
-- JWT authentication.
-
-- Forms validations.
-
-![Email validation.](https://github.com/user-attachments/assets/7b86a5b5-e5a1-44af-8da1-b442d9869afc)
-
-- Instant toast notifications when submitting a form.
-
-![Toast notification.](https://github.com/user-attachments/assets/6c5149c9-bb5d-4786-a51b-38c36b4ade0c)
-
-- Sending and receiving text messages in real time.
-
-![Sending and receiving text messages.](https://github.com/user-attachments/assets/d3ca3f38-41dc-4815-b7eb-35f8b5d10e36)
-
-## 🗂️ Project Structure
-
-This project is packing 81 files! 😅 But don't worry, it's all organized with love, care, and the principles of SoC and DRY in mind (peak engineering, ngl). Each file has a job to do, and it does it well; like little code ninjas in their own modular worlds.
-
-Here's what the structure looks like:
-
-<details>
-<summary><code>❯ cd src && tree</code></summary>
-
-```sh
-❯ cd src && tree
-.
-├── ai.rs
-├── components
-│   ├── common
-│   │   ├── header.rs
-│   │   ├── logo.rs
-│   │   └── server.rs
-│   ├── common.rs
-│   ├── dashboard
-│   │   ├── analytics.rs
-│   │   ├── trips
-│   │   │   ├── create.rs
-│   │   │   ├── edit.rs
-│   │   │   ├── list.rs
-│   │   │   └── read.rs
-│   │   ├── trips.rs
-│   │   ├── chat
-│   │   │   ├── panel.rs
-│   │   │   └── sidebar.rs
-│   │   ├── chat.rs
-│   │   ├── fields
-│   │   │   ├── input.rs
-│   │   │   ├── number.rs
-│   │   │   └── select.rs
-│   │   ├── fields.rs
-│   │   ├── navbar.rs
-│   │   ├── profile.rs
-│   │   └── sidebar.rs
-│   ├── dashboard.rs
-│   ├── features
-│   │   ├── grid.rs
-│   │   └── item.rs
-│   ├── features.rs
-│   ├── footer
-│   │   ├── bottom.rs
-│   │   ├── contact.rs
-│   │   ├── icon.rs
-│   │   ├── links.rs
-│   │   ├── logo.rs
-│   │   └── support.rs
-│   ├── footer.rs
-│   ├── hero.rs
-│   ├── navbar
-│   │   ├── btns.rs
-│   │   └── links.rs
-│   ├── navbar.rs
-│   ├── pricing.rs
-│   ├── spinner.rs
-│   ├── testimonial
-│   │   ├── author.rs
-│   │   ├── card.rs
-│   │   └── rating.rs
-│   ├── testimonial.rs
-│   ├── toast
-│   │   ├── manager.rs
-│   │   └── provider.rs
-│   └── toast.rs
-├── components.rs
-├── db.rs
-├── lib.rs
-├── main.rs
-├── pages
-│   ├── trip.rs
-│   ├── dashboard.rs
-│   ├── home.rs
-│   ├── login.rs
-│   └── signup.rs
-├── pages.rs
-├── router.rs
-├── server
-│   ├── auth
-│   │   ├── controller.rs
-│   │   ├── model.rs
-│   │   └── response.rs
-│   ├── auth.rs
-│   ├── trip
-│   │   ├── controller.rs
-│   │   ├── model.rs
-│   │   ├── request.rs
-│   │   └── response.rs
-│   ├── trip.rs
-│   ├── common
-│   │   ├── request.rs
-│   │   └── response.rs
-│   ├── common.rs
-│   ├── conversation
-│   │   ├── controller.rs
-│   │   ├── model.rs
-│   │   ├── request.rs
-│   │   └── response.rs
-│   ├── conversation.rs
-│   ├── subscription
-│   │   ├── controller.rs
-│   │   ├── model.rs
-│   │   ├── request.rs
-│   │   └── response.rs
-│   └── subscription.rs
-├── server.rs
-├── theme.rs
-└── unsplash.rs
-
-19 directories, 81 files
-```
-
-</details>
-
-### 🛠️ What's Inside?
-
-- **Components**: All modular components live here, following the DRY principle. From `navbar` to `footer`, each feature has its own place, making it easy to find and tweak when needed.
-- **Server**: Adheres to the **MVC** pattern, making the backend as clean as a freshly minted Linux distro. You'll find models, controllers, and response handlers for each feature, organized and ready for action.
-- **Pages**: Each page of the app (e.g., `dashboard.rs`, `home.rs`) is set up here, so you know exactly where to go to update views.
-
-With this structure, the project stays manageable and maintainable, despite those 81 files. Let's be honest, though: it's probably going to keep growing. 😅
+This structure keeps the project scalable and easy to navigate as it grows.
 
 ## 👨‍💻 Data Models
 
-![MongDB Models](https://github.com/user-attachments/assets/a2f430c3-3d5a-491d-9fc9-b833a555cbc1)
+Tripper uses **MongoDB** for data storage, with well-defined models for efficiency and scalability:
 
-Tripper is powered by **MongoDB** storage, with each model carefully structured to keep the app humming along smoothly. Here's a closer look at the data models and how they connect:
-
-- **User** 🧑‍💼: Stores user credentials, profiles, and role information. This model ensures each user enjoys secure, authenticated access.
-- **Trip** 📚: Contains details like title, type, topics, and handy timestamps for creation and updates, essentially, everything about a trip except the content itself!
-- **Detail** 📖: Houses the content for each detail, stored in both markdown and HTML formats for flexibility.
-- **Conversation** 💬: Logs chats between users and the Gemini AI, so each interaction has a place in history.
-- **Message** 📝: Tracks individual messages within each conversation, capturing the ebb and flow of the AI interaction.
-- **Subscription** 💳: Manages subscription plans, payment methods, and active status, essentially the gatekeeper for access levels and perks.
-
-> [!NOTE]
-> MongoDB allows us to embed entire documents within another document, bypassing the need for an `ID` relationship (though it does add one more DB call if we want to fetch the data separately). For now, we're not hitting any performance bottlenecks, but this option keeps things flexible as we scale.
-
-Each model is designed to keep data tightly organized, minimize dependencies, and allow for easy scaling. So whether it's a quick query for a single user or a deep dive into chat history, these models keep Tripper streamlined and ready to grow! 🚀
+- **User** 🧑‍💼: Manages user credentials, profiles, and roles for secure access.
+- **Trip** 📚: Tracks trip details such as title, type, topics, and timestamps.
+- **Detail** 📖: Stores trip daily details content in both markdown and HTML formats for flexibility.
+- **Conversation** 💬: Records AI interactions for reference and analysis.
+- **Message** 📝: Logs individual messages in conversations for traceability.

@@ -36,7 +36,7 @@ pub fn Navbar(dark_mode: bool) -> Element {
                         class: format!("p-2 rounded-full flex items-center justify-center {}", if dark_mode { "bg-gray-700" } else { "bg-gray-200" }),
                         onclick: move |_| show_dropdown.set(!show_dropdown()),
                         img {
-                            src: "./features.webp",
+                            src: "https://rustacean.net/assets/rustacean-flat-happy.svg",
                             alt: "User profile image",
                             class: "w-8 h-8 rounded-full"
                         }
