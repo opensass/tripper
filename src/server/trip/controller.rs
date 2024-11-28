@@ -55,6 +55,20 @@ use aws_sdk_bedrockruntime::{
     types::{ContentBlock, ConversationRole, Message as BedrockMessage},
     Client,
 };
+#[cfg(feature = "server")]
+use reqwest::Client as ReqClient;
+use serde::{Deserialize, Serialize};
+
+#[derive(Serialize, Deserialize)]
+pub struct GooglePlacesResponse {
+    pub predictions: Vec<Prediction>,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct Prediction {
+    pub description: String,
+    pub place_id: String,
+}
 
 #[server]
 pub async fn store_trip(
@@ -410,6 +424,8 @@ pub async fn generate_detail_content(
 
     let mut markdown = "".to_string();
 
+    let mut html = "".to_string();
+
     let response = client
         .converse()
         .model_id("anthropic.claude-3-haiku-20240307-v1:0")
@@ -450,8 +466,6 @@ pub async fn generate_detail_content(
         markdown.clone(),
         language = req.language,
     );
-
-    let mut html = "".to_string();
 
     let response = client
         .converse()
@@ -709,4 +723,30 @@ pub async fn get_details_for_trip(
         status: "success".into(),
         data: details,
     })
+}
+
+#[server]
+pub async fn fetch_google_places_autocomplete(
+    input: String,
+    api_key: String,
+) -> Result<GooglePlacesResponse, ServerFnError> {
+    let url = format!(
+        "https://maps.googleapis.com/maps/api/place/autocomplete/json?input={}&key={}",
+        input, api_key
+    );
+
+    let client = ReqClient::new();
+
+    let response = client
+        .get(&url)
+        .send()
+        .await
+        .map_err(|_| ServerFnError::new("Error fetching autocomplete data from Google API"))?;
+
+    let google_response = response
+        .json::<GooglePlacesResponse>()
+        .await
+        .map_err(|_| ServerFnError::new("Error parsing response from Google API"))?;
+
+    Ok(google_response)
 }

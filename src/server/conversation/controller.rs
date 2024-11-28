@@ -262,7 +262,7 @@ pub async fn send_query_to_bedrock(
             let response_message = Message {
                 id: ObjectId::new(),
                 conversation: req.conversation_id,
-                sender: "gemini".to_string(),
+                sender: "bedrock".to_string(),
                 content: text.clone(),
                 timestamp: Utc::now(),
             };

@@ -123,6 +123,10 @@ pub fn TripsPanel(user_token: Signal<String>) -> Element {
                                     "p-4 shadow rounded-lg {}",
                                     if dark_mode { "bg-gray-700" } else { "bg-gray-100" }
                                 ),
+                                p {
+                                    class: "mt-2 text-sm text-gray-700",
+                                    "{trip.subtitle.expect(\"REASON\")}"
+                                }
                                 img {
                                     src: trip.cover.as_deref().unwrap_or("/path/to/default-cover.jpg"),
                                     alt: "Trip cover",
