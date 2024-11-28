@@ -22,7 +22,7 @@ RUN dx build --release
 RUN ls dist -lh
 COPY . .
 
-FROM debian:tripworm-slim AS runtime
+FROM debian:bookworm-slim AS runtime
 RUN apt-get update && apt install -y openssl
 RUN apt-get install ca-certificates
 WORKDIR /app

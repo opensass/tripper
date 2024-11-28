@@ -193,12 +193,12 @@ pub fn ChatPanel(conversation_id: Signal<ObjectId>, user_token: Signal<String>) 
                 messages.set(current_messages);
 
                 // spawn(async move {
-                //     let response = send_query_to_gemini(SendQueryRequest {
+                //     let response = send_query_to_bedrock(SendQueryRequest {
                 //         query: query_text,
                 //         trip: trip.id.to_string(),
                 //         detail: detail.id.to_string(),
                 //         conversation_id: conversation_id(),
-                //         model: "gemini-pro".to_string(),
+                //         model: "anthropic.claude-3-haiku-20240307-v1:0".to_string(),
                 //         token: user_token(),
                 //     })
                 //     .await;

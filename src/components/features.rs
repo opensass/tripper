@@ -65,7 +65,7 @@ pub fn Features() -> Element {
 
                 div { class: "relative mb-12 space-y-6",
                     img {
-                        src: "./features-icon.webp",
+                        src: "./features.webp",
                         alt: "Tripper Icon",
                         class: "w-24 h-24 mx-auto animate-spin-slow hover:animate-spin"
                     }
