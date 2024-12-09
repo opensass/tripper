@@ -23,7 +23,7 @@ rand = { version = "0.8.5", optional = true }
 axum-extra = { version = "0.9.4", features = ["cookie"], optional = true }
 rand_core = { version = "0.6.4", features = ["std"], optional = true }
 anyhow = "1.0.93"
-time = "0.3.36"
+time = "0.3.37"
 regex = "1.11.1"
 getrandom = { version = "0.2.15", features = ["js"] }
 dioxus-free-icons = { version = "0.8.6", features = ["font-awesome-regular", "font-awesome-brands", "font-awesome-solid"] }
