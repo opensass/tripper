@@ -41,7 +41,7 @@ reqwest = { version = "0.12.9", features = ["json"], optional = true }
 dioxus-web = { version = "0.5.6", features = ["hydrate"] }
 
 # Debug
-dioxus-logger = "0.5.1"
+dioxus-logger = "0.6.0"
 
 [features]
 default = []
