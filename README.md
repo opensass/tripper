@@ -28,7 +28,7 @@ Tripper is a modern travel assistant leveraging [**AWS Bedrock**](https://aws.am
 2. **Install [`Dioxus CLI`](https://dioxuslabs.com/learn/0.5/getting_started)**:
 
    ```bash
-   cargo install dioxus-cli
+   cargo install dioxus-cli@0.5.6
    ```
 
 3. **Fork/Clone the Repository**:
